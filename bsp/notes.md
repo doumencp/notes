@@ -33,6 +33,10 @@ La solution a été d'activer explicitement l'UDP au run du conteneur avec /udp 
 ```bash
 podman run --name snmp -p 1161:1161/udp --rm -it snmpsim
 ```
+ou 
+```bash
+podman run --name snmp -p 1161:161/udp --rm -it docker.io/tandrup/snmpsim:latest
+```
 
 l'image snmpsim est une image buildée par mes soins, qui démarre un serveur snmp, avec quelques utilitaires de debug dans l'image :
 
@@ -66,4 +70,51 @@ USER snmpsimuser
 
 # Commande par défaut
 CMD ["snmpsim-command-responder", "--agent-udpv4-endpoint=0.0.0.0:1161"]
+```
+
+et ce compose permet de simuler encore plus proche du setup cible
+
+```yaml
+version: '3'
+services:
+  snmp:
+    image: docker.io/tandrup/snmpsim:latest
+    container_name: snmp_container
+    hostname: snmp
+    logging:
+      driver: "journald"
+    # security_opt:
+    #   - label=type:snmp.process
+    # userns_mode: keep-id:uid=1000,gid=1000
+    # sysctls:
+    #   - fs.mqueue.msg_max=100
+    ports:
+      - "1161:161/udp"
+    networks:
+      snmp_net:
+        ipv4_address: 172.16.60.2
+  # nginx:
+  #   image: docker.io/library/nginx
+  #   container_name: nginx_container
+  #   hostname: nginx
+  #   logging:
+  #     driver: "journald"
+  #   ports:
+  #     - "8080:80/tcp"
+  #   networks:
+  #     snmp_net:
+  #       ipv4_address: 172.16.60.3
+networks:
+  snmp_net:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.60.0/30
+```
+
+D'après nos infos, le conteneur cible écoute sur 1162 en UDP, mais il faut peut etre également être capable de recevoir des paquets sur 161 en UDP.
+Il est donc nécessaire de forward les paquets entrants sur le port 161 UDP du host vers le port 1161 UDP, pour que le conteneur les recoive. Dans ce cas là, 
+on peut faire (en tant que root) :
+```bash
+sudo socat -v UDP4-RECVFROM:161,reuseaddr,fork UDP4-SENDTO:192.168.1.198:1161
 ```
