@@ -6,6 +6,8 @@ GCP consiste en une multitude de services, qui peuvent être classés en 3 grand
 C'est le service de GCP qui permet de créer des VMs.
 On peut venir utiliser des fonctionnalités telles que le load balancing ou le autoscaling, pour avoir une infrastructure qui peut s'adapter en fonction de la charge.
 
+
+
 Il est souvent utilisé avec les services de stockage de GCP, de base de données, et de Cloud Load Balancing.
 
 Lorsque l'on instancie une VM depuis le GCE, on a allrs la possibilité de choisir le système d'exploitation, le type de machine, le nombre de CPU, la quantité de RAM, le type de disque, et le réseau auquel la VM sera connectée. Il y a également des paramètres pour choisir d'ajouter des labels, des tags, et des clés SSH pour l'accès sécurisé, ainsi que les règles de firewall (ex : on autorise le traffic entrant HTTP si on sert une application via HTTP).
@@ -36,3 +38,7 @@ Les templates ne peuvent pas être modifiés après leur création. Si vous deve
 Dans le cas d'un besoin d'avoir des paquets ou soft spécifiques sur la VM, il devient lour dde devoir exécuter un script à chaque démarrage. Dans ce cas, il est possible de créer une image personnalisée, qui embarque directement ces derniers.
 
 Pour ce faire, il faut une image et l'enrichir. Il y a plusieurs possibilités. Par exemple, on peut créer une image à partir d'un disque d'une VM dans GCE, qui nous permettra d'avoir une image qui réplique exactement la VM et sans installation au démarrage de la machine en question.
+
+### Optimiser les couts 
+
+Il existe plusieurs manières d'optimiser les couts de
