@@ -118,3 +118,7 @@ on peut faire (en tant que root) :
 ```bash
 sudo socat -v UDP4-RECVFROM:161,reuseaddr,fork UDP4-SENDTO:192.168.1.198:1161
 ```
+ou
+```bash
+sudo iptables -t nat -A PREROUTING -p udp --dport 161 -j REDIRECT --to-port 1161
+```
